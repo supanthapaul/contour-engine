@@ -3,6 +3,7 @@ package org.supanthapaul.contour;
 import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 import org.supanthapaul.renderer.Shader;
+import org.supanthapaul.util.Time;
 
 import java.awt.event.KeyEvent;
 import java.nio.FloatBuffer;
@@ -92,6 +93,7 @@ public class LevelEditorScene extends Scene {
         // upload projection and view matrices
         defaultShader.uploadMat4f("uProjection", camera.getProjectionMatrix());
         defaultShader.uploadMat4f("uView", camera.getViewMatrix());
+        defaultShader.uploadFloat("uTime", Time.getTime());
         // bind the VAO that we're using
         glBindVertexArray(vaoID);
 

@@ -2,6 +2,8 @@ package org.supanthapaul.contour;
 
 public abstract class Scene {
 
+    protected Camera camera;
+
     public Scene() {
 
     }

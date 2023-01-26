@@ -3,6 +3,7 @@ package org.supanthapaul.contour;
 import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 import org.supanthapaul.renderer.Shader;
+import org.supanthapaul.renderer.Texture;
 import org.supanthapaul.util.Time;
 
 import java.awt.event.KeyEvent;
@@ -18,13 +19,14 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 public class LevelEditorScene extends Scene {
 
     private Shader defaultShader;
+    private Texture testTexture;
 
     private float[] vertexArray = {
-            // position              // color
-            100.0f, 0.0f, 0.0f,      1.0f, 0.0f, 0.0f, 1.0f, // bottom right 0
-            0.0f, 100.0f, 0.0f,      0.0f, 1.0f, 0.0f, 1.0f, // top left     1
-            100.0f, 100.0f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f, // top right    2
-            0.0f, 0.0f, 0.0f,        1.0f, 1.0f, 0.0f, 1.0f, // bottom left  3
+            // position              // color                   // UV coordinates
+            100.0f, 0.0f, 0.0f,      1.0f, 0.0f, 0.0f, 1.0f,    1, 1,  // bottom right 0
+            0.0f, 100.0f, 0.0f,      0.0f, 1.0f, 0.0f, 1.0f,    0, 0,  // top left     1
+            100.0f, 100.0f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f,    1, 0,  // top right    2
+            0.0f, 0.0f, 0.0f,        1.0f, 1.0f, 0.0f, 1.0f,    0, 1,  // bottom left  3
     };
 
     // IMPORTANT: Must be in counter-clockwise order
@@ -49,6 +51,7 @@ public class LevelEditorScene extends Scene {
 
         defaultShader = new Shader("assets/shaders/default.glsl");
         defaultShader.compile();
+        this.testTexture = new Texture("assets/images/Characters/character_0000.png");
 
 
         // ============================================================
@@ -77,19 +80,30 @@ public class LevelEditorScene extends Scene {
         // Add the vertex attribute pointers
         int positionsSize = 3;
         int colorSize = 4;
-        int floatSizeBytes = 4; // size of float is 4 bytes
-        int vertexSizeBytes = (positionsSize + colorSize) * floatSizeBytes;
+        int uvSize = 2;
+        int vertexSizeBytes = (positionsSize + colorSize + uvSize) * Float.BYTES;
         // position attribute
         glVertexAttribPointer(0, positionsSize, GL_FLOAT,false, vertexSizeBytes, 0); // pointer is like an offset
         glEnableVertexAttribArray(0);
         // color attribute
-        glVertexAttribPointer(1, colorSize, GL_FLOAT,false, vertexSizeBytes, positionsSize * floatSizeBytes);
+        glVertexAttribPointer(1, colorSize, GL_FLOAT,false, vertexSizeBytes, positionsSize * Float.BYTES);
         glEnableVertexAttribArray(1);
+        // UV attribute
+        glVertexAttribPointer(2, uvSize, GL_FLOAT, false, vertexSizeBytes, (positionsSize + colorSize) * Float.BYTES);
+        glEnableVertexAttribArray(2);
     }
 
     @Override
     public void update(float dt) {
         defaultShader.use();
+
+        // upload texture to shader
+        defaultShader.uploadTexture("TEXT_SAMPLER", 0);
+        // activate slot 0
+        glActiveTexture(GL_TEXTURE0);
+        // bind texture
+        testTexture.bind();
+
         // upload projection and view matrices
         defaultShader.uploadMat4f("uProjection", camera.getProjectionMatrix());
         defaultShader.uploadMat4f("uView", camera.getViewMatrix());

@@ -173,4 +173,11 @@ public class Shader {
         use();
         glUniform1i(varLocation, val);
     }
+
+    public void uploadTexture(String varName, int slot) {
+        int varLocation = glGetUniformLocation(shaderProgramID, varName);
+        // make sure we're using this shader before uploading data
+        use();
+        glUniform1i(varLocation, slot);
+    }
 }

@@ -1,10 +1,13 @@
 package org.supanthapaul.contour;
 
+import org.supanthapaul.renderer.Renderer;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Scene {
 
+    protected Renderer renderer = new Renderer();
     protected Camera camera;
     private boolean isRunning = false;
     // The game objects that makes up this scene
@@ -22,6 +25,7 @@ public abstract class Scene {
         // start all game objects of the scene
         for(GameObject go : gameObjects) {
             go.start();
+            this.renderer.add(go);
         }
         // scene is now running
         isRunning = true;
@@ -36,8 +40,13 @@ public abstract class Scene {
             // if the scene is running then add and start the gameobject
             gameObjects.add(go);
             go.start();
+            this.renderer.add(go);
         }
     }
 
     public abstract void update(float dt);
+
+    public Camera getCamera() {
+        return this.camera;
+    }
 }

@@ -1,6 +1,7 @@
 package org.supanthapaul.contour;
 
 import org.joml.Vector2f;
+import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 import org.supanthapaul.components.FontRenderer;
 import org.supanthapaul.components.SpriteRenderer;
@@ -51,99 +52,36 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void init() {
-        testObject = new GameObject("Test object");
-        testObject.addComponent(new SpriteRenderer());
-        testObject.addComponent(new FontRenderer());
-        this.addGameObjectToScene(testObject);
+        this.camera = new Camera(new Vector2f());
 
-        this.camera = new Camera(new Vector2f(-20f, -20f));
+        int xOffset = 10;
+        int yOffset = 10;
 
-        defaultShader = new Shader("assets/shaders/default.glsl");
-        defaultShader.compile();
-        this.testTexture = new Texture("assets/images/Characters/character_0000.png");
+        float totalWidth = (float)(600 - xOffset * 2);
+        float totalHeight = (float)(300 - yOffset * 2);
+        float sizeX = totalWidth / 100.0f;
+        float sizeY = totalHeight / 100.0f;
 
+        for (int x=0; x < 100; x++) {
+            for (int y=0; y < 100; y++) {
+                float xPos = xOffset + (x * sizeX);
+                float yPos = yOffset + (y * sizeY);
 
-        // ============================================================
-        // Generate VAO, VBO, and EBO buffer objects, and send to GPU
-        // ============================================================
-        vaoID = glGenVertexArrays();
-        glBindVertexArray(vaoID);
-
-        // create a float buffer of vertices
-        FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertexArray.length);
-        vertexBuffer.put(vertexArray).flip();
-
-        // create VBO and upload the vertex buffer
-        vboID = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vboID);
-        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
-
-        // Create the indices(elements) and upload
-        IntBuffer elementBuffer = BufferUtils.createIntBuffer(elementArray.length);
-        elementBuffer.put(elementArray).flip();
-
-        eboID = glGenBuffers();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementBuffer, GL_STATIC_DRAW);
-
-        // Add the vertex attribute pointers
-        int positionsSize = 3;
-        int colorSize = 4;
-        int uvSize = 2;
-        int vertexSizeBytes = (positionsSize + colorSize + uvSize) * Float.BYTES;
-        // position attribute
-        glVertexAttribPointer(0, positionsSize, GL_FLOAT,false, vertexSizeBytes, 0); // pointer is like an offset
-        glEnableVertexAttribArray(0);
-        // color attribute
-        glVertexAttribPointer(1, colorSize, GL_FLOAT,false, vertexSizeBytes, positionsSize * Float.BYTES);
-        glEnableVertexAttribArray(1);
-        // UV attribute
-        glVertexAttribPointer(2, uvSize, GL_FLOAT, false, vertexSizeBytes, (positionsSize + colorSize) * Float.BYTES);
-        glEnableVertexAttribArray(2);
+                GameObject go = new GameObject("Obj" + x + "" + y, new Transform(new Vector2f(xPos, yPos), new Vector2f(sizeX, sizeY)));
+                go.addComponent(new SpriteRenderer(new Vector4f(xPos / totalWidth, yPos / totalHeight, 1, 1)));
+                this.addGameObjectToScene(go);
+            }
+        }
     }
 
     @Override
     public void update(float dt) {
-        defaultShader.use();
-        camera.position.x -= dt * 50f;
-
-        // upload texture to shader
-        defaultShader.uploadTexture("TEXT_SAMPLER", 0);
-        // activate slot 0
-        glActiveTexture(GL_TEXTURE0);
-        // bind texture
-        testTexture.bind();
-
-        // upload projection and view matrices
-        defaultShader.uploadMat4f("uProjection", camera.getProjectionMatrix());
-        defaultShader.uploadMat4f("uView", camera.getViewMatrix());
-        defaultShader.uploadFloat("uTime", Time.getTime());
-        // bind the VAO that we're using
-        glBindVertexArray(vaoID);
-
-        // enable the vertex attribute pointers
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-
-        // draw
-        glDrawElements(GL_TRIANGLES, elementArray.length, GL_UNSIGNED_INT, 0);
-
-        // unbind everything
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glBindVertexArray(0);
-        defaultShader.detach();
-
-        if(!firstTime) {
-            System.out.println("Creating test object 2");
-            testObject = new GameObject("Test object 2");
-            testObject.addComponent(new SpriteRenderer());
-            this.addGameObjectToScene(testObject);
-            firstTime= true;
-        }
+        System.out.println(1/dt);
         // update game objects
         for(GameObject go : this.gameObjects) {
             go.update(dt);
         }
+
+        this.renderer.render();
     }
 }

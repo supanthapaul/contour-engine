@@ -3,7 +3,7 @@ package org.supanthapaul.contour;
 public abstract class Component {
 
     // The game object that uses this component
-    protected GameObject gameObject = null;
+    public GameObject gameObject = null;
 
     public void start() {
 

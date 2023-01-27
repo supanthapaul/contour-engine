@@ -2,6 +2,8 @@ package org.supanthapaul.contour;
 
 import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
+import org.supanthapaul.components.FontRenderer;
+import org.supanthapaul.components.SpriteRenderer;
 import org.supanthapaul.renderer.Shader;
 import org.supanthapaul.renderer.Texture;
 import org.supanthapaul.util.Time;
@@ -20,6 +22,7 @@ public class LevelEditorScene extends Scene {
 
     private Shader defaultShader;
     private Texture testTexture;
+    private GameObject testObject;
 
     private float[] vertexArray = {
             // position              // color                   // UV coordinates
@@ -40,6 +43,7 @@ public class LevelEditorScene extends Scene {
             0, 1, 3  // bottom left triangle
     };
     private int vaoID, vboID, eboID;
+    private boolean firstTime = false;
 
     public LevelEditorScene() {
 
@@ -47,6 +51,11 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void init() {
+        testObject = new GameObject("Test object");
+        testObject.addComponent(new SpriteRenderer());
+        testObject.addComponent(new FontRenderer());
+        this.addGameObjectToScene(testObject);
+
         this.camera = new Camera(new Vector2f(-20f, -20f));
 
         defaultShader = new Shader("assets/shaders/default.glsl");
@@ -96,6 +105,7 @@ public class LevelEditorScene extends Scene {
     @Override
     public void update(float dt) {
         defaultShader.use();
+        camera.position.x -= dt * 50f;
 
         // upload texture to shader
         defaultShader.uploadTexture("TEXT_SAMPLER", 0);
@@ -123,5 +133,17 @@ public class LevelEditorScene extends Scene {
         glDisableVertexAttribArray(1);
         glBindVertexArray(0);
         defaultShader.detach();
+
+        if(!firstTime) {
+            System.out.println("Creating test object 2");
+            testObject = new GameObject("Test object 2");
+            testObject.addComponent(new SpriteRenderer());
+            this.addGameObjectToScene(testObject);
+            firstTime= true;
+        }
+        // update game objects
+        for(GameObject go : this.gameObjects) {
+            go.update(dt);
+        }
     }
 }

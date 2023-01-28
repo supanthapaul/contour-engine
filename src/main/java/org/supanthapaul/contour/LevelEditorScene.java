@@ -7,17 +7,8 @@ import org.supanthapaul.components.FontRenderer;
 import org.supanthapaul.components.SpriteRenderer;
 import org.supanthapaul.renderer.Shader;
 import org.supanthapaul.renderer.Texture;
+import org.supanthapaul.util.AssetPool;
 import org.supanthapaul.util.Time;
-
-import java.awt.event.KeyEvent;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-
-import static org.lwjgl.opengl.GL15.glBindBuffer;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL20.glGetShaderi;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class LevelEditorScene extends Scene {
 
@@ -72,6 +63,12 @@ public class LevelEditorScene extends Scene {
                 this.addGameObjectToScene(go);
             }
         }
+
+        loadResources();
+    }
+
+    private void loadResources() {
+        AssetPool.getShader("assets/shaders/default.glsl");
     }
 
     @Override

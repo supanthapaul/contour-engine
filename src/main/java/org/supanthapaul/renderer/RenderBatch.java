@@ -4,7 +4,6 @@ import org.joml.Vector4f;
 import org.supanthapaul.components.SpriteRenderer;
 import org.supanthapaul.contour.Window;
 import org.supanthapaul.util.AssetPool;
-import org.supanthapaul.util.Time;
 
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;

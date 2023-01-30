@@ -2,13 +2,10 @@ package org.supanthapaul.contour;
 
 import org.joml.Vector2f;
 import org.joml.Vector4f;
-import org.lwjgl.BufferUtils;
-import org.supanthapaul.components.FontRenderer;
 import org.supanthapaul.components.SpriteRenderer;
 import org.supanthapaul.renderer.Shader;
 import org.supanthapaul.renderer.Texture;
 import org.supanthapaul.util.AssetPool;
-import org.supanthapaul.util.Time;
 
 public class LevelEditorScene extends Scene {
 

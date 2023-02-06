@@ -35,6 +35,8 @@ public class LevelEditorScene extends Scene {
     };
     private int vaoID, vboID, eboID;
     private boolean firstTime = false;
+    GameObject obj1;
+    Spritesheet spritesheet;
 
     public LevelEditorScene() {
 
@@ -46,9 +48,9 @@ public class LevelEditorScene extends Scene {
 
         this.camera = new Camera(new Vector2f());
 
-        Spritesheet spritesheet = AssetPool.getSpritesheet("assets/images/Tilemap/characters_packed.png");
+        spritesheet = AssetPool.getSpritesheet("assets/images/Tilemap/characters_packed.png");
 
-        GameObject obj1 = new GameObject("1", new Transform(new Vector2f(100, 100), new Vector2f(256, 256)));
+        obj1 = new GameObject("1", new Transform(new Vector2f(100, 100), new Vector2f(256, 256)));
         obj1.addComponent(new SpriteRenderer(spritesheet.getSprite(0)));
         this.addGameObjectToScene(obj1);
 
@@ -65,9 +67,23 @@ public class LevelEditorScene extends Scene {
                         24, 24, 27, 0));
     }
 
+    private int spriteIndex = 0;
+    private float spriteFlipTime = 0.3f;
+    private float spriteFlipTimeLeft = 0f;
+
     @Override
     public void update(float dt) {
         System.out.println(1/dt);
+        spriteFlipTimeLeft -= dt;
+        if(spriteFlipTimeLeft <= 0f) {
+            spriteFlipTimeLeft = spriteFlipTime;
+            spriteIndex++;
+            if(spriteIndex > 1) {
+                spriteIndex = 0;
+            }
+            obj1.getComponent(SpriteRenderer.class).setSprite(spritesheet.getSprite(spriteIndex));
+        }
+        obj1.transform.position.x += 10f * dt;
         // update game objects
         for(GameObject go : this.gameObjects) {
             go.update(dt);

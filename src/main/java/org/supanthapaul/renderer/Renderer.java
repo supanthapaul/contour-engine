@@ -4,6 +4,7 @@ import org.supanthapaul.components.SpriteRenderer;
 import org.supanthapaul.contour.GameObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Renderer {
@@ -24,7 +25,7 @@ public class Renderer {
     private void add(SpriteRenderer sprite) {
         boolean added = false;
         for(RenderBatch batch : batches) {
-            if(batch.hasRoom()) {
+            if(batch.hasRoom() && batch.zIndex() == sprite.gameObject.zIndex()) {
                 Texture tex = sprite.getTexture();
                 if(tex == null || (batch.hasTexture(tex) || batch.hasTextureRoom())) {
                     batch.addSprite(sprite);
@@ -36,10 +37,12 @@ public class Renderer {
         }
 
         if(!added) {
-            RenderBatch newBatch = new RenderBatch(MAX_BATCH_SIZE);
+            RenderBatch newBatch = new RenderBatch(MAX_BATCH_SIZE, sprite.gameObject.zIndex());
             newBatch.start();
             batches.add(newBatch);
             newBatch.addSprite(sprite);
+            // sort the batches by their zindex
+            Collections.sort(batches);
         }
     }
 

@@ -1,6 +1,12 @@
 package org.supanthapaul.contour;
 
+import imgui.ImGui;
+import imgui.ImGuiIO;
+import imgui.flag.ImGuiConfigFlags;
+import imgui.gl3.ImGuiImplGl3;
+import imgui.glfw.ImGuiImplGlfw;
 import org.lwjgl.Version;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 
@@ -18,13 +24,20 @@ public class Window {
     private static Window window = null;
     private static Scene currentScene = null;
 
-    private Window() {
+    private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
+    private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
+    private ImGuiLayer imGuiLayer;
+
+    private String glslVersion = null;
+
+    private Window(ImGuiLayer layer) {
         this.width = 1280;
         this.height = 720;
         this.title = "Contour Engine";
         r = 1;
         g = 1;
         b = 1;
+        this.imGuiLayer = layer;
     }
 
     public static void changeScene(int newScene) {
@@ -47,7 +60,7 @@ public class Window {
 
     public static Window get() {
         if(Window.window == null) {
-            Window.window = new Window();
+            Window.window = new Window(new ImGuiLayer());
         }
 
         return Window.window;
@@ -61,15 +74,13 @@ public class Window {
         System.out.println("Hello LWJGL " + Version.getVersion());
 
         init();
+        initImGui();
+        imGuiGlfw.init(glfwWindow, true);
+        imGuiGl3.init(glslVersion);
         loop();
 
-        // free the memory
-        glfwFreeCallbacks(glfwWindow);
-        glfwDestroyWindow(glfwWindow);
-
-        // Terminate glfw and free the error callback
-        glfwTerminate();
-        glfwSetErrorCallback(null).free();
+        // window destroy cleanup
+        destroy();
     }
 
     public void init() {
@@ -79,6 +90,12 @@ public class Window {
         // init glfw
         if ( !glfwInit() )
             throw new IllegalStateException("Unable to initialize GLFW");
+
+        // set glsl and gl version
+        // https://en.wikipedia.org/wiki/OpenGL_Shading_Language
+        glslVersion = "#version 330 core";
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
         // configure glfw
         glfwDefaultWindowHints();
@@ -121,6 +138,13 @@ public class Window {
         Window.changeScene(0);
     }
 
+    private void initImGui() {
+        ImGui.createContext();
+        // enable ImGui viewports
+        ImGuiIO io = ImGui.getIO();
+        io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
+    }
+
     public void loop() {
         float beginTime = (float) glfwGetTime();
         float endTime = (float) glfwGetTime();
@@ -133,10 +157,29 @@ public class Window {
             glClearColor(r, g, b, 1);
             glClear(GL_COLOR_BUFFER_BIT);
 
+            // update current scene
             if(dt >= 0) {
                 currentScene.update(dt);
             }
 
+            // imgui new frame
+            imGuiGlfw.newFrame();
+            ImGui.newFrame();
+
+            // call all the imgui functions
+            imGuiLayer.imgui();
+
+            // render imgui
+            ImGui.render();
+            imGuiGl3.renderDrawData(ImGui.getDrawData());
+
+            // end of frame stuff
+            if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
+                final long backupWindowPtr = glfwGetCurrentContext();
+                ImGui.updatePlatformWindows();
+                ImGui.renderPlatformWindowsDefault();
+                GLFW.glfwMakeContextCurrent(backupWindowPtr);
+            }
             glfwSwapBuffers(glfwWindow);
 
             endTime = (float) glfwGetTime();
@@ -144,5 +187,18 @@ public class Window {
             dt = endTime - beginTime;
             beginTime = endTime;
         }
+    }
+
+    public void destroy() {
+        imGuiGl3.dispose();
+        imGuiGlfw.dispose();
+        ImGui.destroyContext();
+        // free the memory
+        glfwFreeCallbacks(glfwWindow);
+        glfwDestroyWindow(glfwWindow);
+
+        // Terminate glfw and free the error callback
+        glfwTerminate();
+        glfwSetErrorCallback(null).free();
     }
 }

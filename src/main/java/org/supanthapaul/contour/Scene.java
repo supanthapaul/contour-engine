@@ -1,5 +1,6 @@
 package org.supanthapaul.contour;
 
+import imgui.ImGui;
 import org.supanthapaul.renderer.Renderer;
 
 import java.util.ArrayList;
@@ -12,6 +13,8 @@ public abstract class Scene {
     private boolean isRunning = false;
     // The game objects that makes up this scene
     protected List<GameObject> gameObjects = new ArrayList<>();
+    // the currently active game object
+    protected GameObject activeGameObject = null;
 
     public Scene() {
 
@@ -45,6 +48,20 @@ public abstract class Scene {
     }
 
     public abstract void update(float dt);
+
+    public void sceneImgui() {
+        if(activeGameObject != null) {
+            ImGui.begin("Inspector");
+            activeGameObject.imgui();
+            ImGui.end();
+        }
+
+        imgui();
+    }
+
+    public void imgui() {
+
+    }
 
     public Camera getCamera() {
         return this.camera;

@@ -1,8 +1,11 @@
 package org.supanthapaul.contour;
 
+import imgui.ImFontAtlas;
+import imgui.ImFontConfig;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiConfigFlags;
+import imgui.flag.ImGuiFreeTypeBuilderFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import org.lwjgl.Version;
@@ -140,8 +143,31 @@ public class Window {
 
     private void initImGui() {
         ImGui.createContext();
-        // enable ImGui viewports
         ImGuiIO io = ImGui.getIO();
+
+        // retain imgui states bw sessions (eg: window positions)
+        io.setIniFilename("imgui.ini");
+
+        // Fonts configuration
+        final ImFontAtlas fontAtlas = io.getFonts();
+        final ImFontConfig fontConfig = new ImFontConfig(); // Natively allocated object, should be explicitly destroyed
+
+        // Glyphs could be added per-font as well as per config used globally like here
+        fontConfig.setGlyphRanges(fontAtlas.getGlyphRangesDefault());
+
+        // Fonts merge example
+        fontConfig.setPixelSnapH(true);
+
+
+        // Fonts from file/memory example
+        // We can add new fonts from the file system
+        fontAtlas.addFontFromFileTTF("assets/fonts/segoeui.ttf", 32, fontConfig);
+        fontConfig.destroy(); // After all fonts were added we don't need this config more
+
+        // Use freetype instead of stb_truetype to build a fonts texture
+        //ImGuiFreeType.buildFontAtlas(fontAtlas, ImGuiFreeType.RasterizerFlags.LightHinting);
+
+        // enable ImGui viewports
         io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
     }
 
@@ -166,6 +192,8 @@ public class Window {
             imGuiGlfw.newFrame();
             ImGui.newFrame();
 
+            // Call the current scene's imgui functions
+            currentScene.sceneImgui();
             // call all the imgui functions
             imGuiLayer.imgui();
 

@@ -1,5 +1,6 @@
 package org.supanthapaul.components;
 
+import imgui.ImGui;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import org.supanthapaul.contour.Component;
@@ -36,6 +37,14 @@ public class SpriteRenderer extends Component {
             this.gameObject.transform.copy(lastTransform);
             // the sprite is dirty now
             this.isDirty = true;
+        }
+    }
+
+    @Override
+    public void imgui() {
+        float[] col = {this.color.x, this.color.y, this.color.z, this.color.w};
+        if(ImGui.colorPicker4("Color picker", col)) {
+            this.setColor(new Vector4f(col));
         }
     }
 

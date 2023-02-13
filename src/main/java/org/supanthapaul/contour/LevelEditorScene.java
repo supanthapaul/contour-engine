@@ -1,5 +1,6 @@
 package org.supanthapaul.contour;
 
+import imgui.ImGui;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import org.supanthapaul.components.Sprite;
@@ -54,6 +55,7 @@ public class LevelEditorScene extends Scene {
                 new Transform(new Vector2f(150, 100), new Vector2f(256, 256)), 0);
         obj1.addComponent(new SpriteRenderer(spritesheet.getSprite(0)));
         this.addGameObjectToScene(obj1);
+        this.activeGameObject = obj1;
 
         GameObject obj2 = new GameObject("2",
                 new Transform(new Vector2f(400, 100), new Vector2f(256, 256)), -1);
@@ -85,12 +87,19 @@ public class LevelEditorScene extends Scene {
             }
             obj1.getComponent(SpriteRenderer.class).setSprite(spritesheet.getSprite(spriteIndex));
         }
-        obj1.transform.position.x += 10f * dt;
+        //obj1.transform.position.x += 10f * dt;
         // update game objects
         for(GameObject go : this.gameObjects) {
             go.update(dt);
         }
 
         this.renderer.render();
+    }
+
+    @Override
+    public void imgui() {
+        ImGui.begin("Level Editor");
+        ImGui.text("How cool is this?");
+        ImGui.end();
     }
 }

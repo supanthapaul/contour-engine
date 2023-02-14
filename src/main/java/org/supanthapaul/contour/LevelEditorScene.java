@@ -1,5 +1,7 @@
 package org.supanthapaul.contour;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import imgui.ImGui;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
@@ -53,15 +55,21 @@ public class LevelEditorScene extends Scene {
 
         obj1 = new GameObject("1",
                 new Transform(new Vector2f(150, 100), new Vector2f(256, 256)), 0);
-        obj1.addComponent(new SpriteRenderer(spritesheet.getSprite(0)));
+        SpriteRenderer spriteRenderer1 = new SpriteRenderer();
+        spriteRenderer1.setSprite(spritesheet.getSprite(0));
+        obj1.addComponent(spriteRenderer1);
         this.addGameObjectToScene(obj1);
         this.activeGameObject = obj1;
 
         GameObject obj2 = new GameObject("2",
                 new Transform(new Vector2f(400, 100), new Vector2f(256, 256)), -1);
-        obj2.addComponent(new SpriteRenderer(spritesheet.getSprite(4)));
+        SpriteRenderer spriteRenderer2 = new SpriteRenderer();
+        spriteRenderer2.setSprite(spritesheet.getSprite(2));
+        obj2.addComponent(spriteRenderer2);
         this.addGameObjectToScene(obj2);
-        loadResources();
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        System.out.println(gson.toJson(obj1));
     }
 
     private void loadResources() {
@@ -77,7 +85,7 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void update(float dt) {
-        System.out.println(1/dt);
+        //System.out.println(1/dt);
         spriteFlipTimeLeft -= dt;
         if(spriteFlipTimeLeft <= 0f) {
             spriteFlipTimeLeft = spriteFlipTime;

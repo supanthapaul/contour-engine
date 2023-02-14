@@ -3,7 +3,8 @@ package org.supanthapaul.contour;
 public abstract class Component {
 
     // The game object that uses this component
-    public GameObject gameObject = null;
+    // transient properties wont be serialized by gson
+    public transient GameObject gameObject = null;
 
     public void start() {
 

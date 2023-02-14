@@ -12,7 +12,11 @@ public class Texture {
     private String filepath;
     private int texID, width, height;
 
-    public Texture(String filepath) {
+//    public Texture(String filepath) {
+//
+//    }
+
+    public void init(String filepath) {
         this.filepath = filepath;
 
         // generate texture on GPU
@@ -27,9 +31,6 @@ public class Texture {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         // when stretching the texture, also pixelate
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        // Alpha blending
-//        glEnable( GL_BLEND );
-//        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
         // stbi stores width, height, and number of channels in IntBuffer
         IntBuffer width = BufferUtils.createIntBuffer(1);

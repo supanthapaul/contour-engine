@@ -15,7 +15,7 @@ public class SpriteRenderer extends Component {
     // transient properties wont be serialized by gson
     private transient Transform lastTransform;
     // The sprite is "dirty" if it needs to be redrawn by the GPU
-    private transient boolean isDirty = false;
+    private transient boolean isDirty = true;
 
 //    public SpriteRenderer(Vector4f color) {
 //        this.color = color;

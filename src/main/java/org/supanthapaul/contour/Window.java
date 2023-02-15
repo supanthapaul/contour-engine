@@ -47,11 +47,13 @@ public class Window {
         switch (newScene) {
             case 0:
                 currentScene = new LevelEditorScene();
+                currentScene.load();
                 currentScene.init();
                 currentScene.start();
                 break;
             case 1:
                 currentScene = new LevelScene();
+                currentScene.load();
                 currentScene.init();
                 currentScene.start();
                 break;
@@ -161,7 +163,7 @@ public class Window {
 
         // Fonts from file/memory example
         // We can add new fonts from the file system
-        fontAtlas.addFontFromFileTTF("assets/fonts/segoeui.ttf", 32, fontConfig);
+        fontAtlas.addFontFromFileTTF("assets/fonts/segoeui.ttf", 24, fontConfig);
         fontConfig.destroy(); // After all fonts were added we don't need this config more
 
         // Use freetype instead of stb_truetype to build a fonts texture
@@ -215,6 +217,9 @@ public class Window {
             dt = endTime - beginTime;
             beginTime = endTime;
         }
+
+        // save the current scene
+        currentScene.saveExit();
     }
 
     public void destroy() {

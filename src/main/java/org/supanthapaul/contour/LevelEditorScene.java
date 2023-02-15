@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import imgui.ImGui;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
+import org.supanthapaul.components.Rigidbody;
 import org.supanthapaul.components.Sprite;
 import org.supanthapaul.components.SpriteRenderer;
 import org.supanthapaul.components.Spritesheet;
@@ -51,6 +52,11 @@ public class LevelEditorScene extends Scene {
 
         this.camera = new Camera(new Vector2f());
 
+        if(levelLoaded) {
+            this.activeGameObject = gameObjects.get(0);
+            return;
+        }
+
         spritesheet = AssetPool.getSpritesheet("assets/images/Tilemap/characters_packed.png");
 
         obj1 = new GameObject("1",
@@ -58,6 +64,7 @@ public class LevelEditorScene extends Scene {
         SpriteRenderer spriteRenderer1 = new SpriteRenderer();
         spriteRenderer1.setSprite(spritesheet.getSprite(0));
         obj1.addComponent(spriteRenderer1);
+        obj1.addComponent(new Rigidbody());
         this.addGameObjectToScene(obj1);
         this.activeGameObject = obj1;
 
@@ -68,8 +75,17 @@ public class LevelEditorScene extends Scene {
         obj2.addComponent(spriteRenderer2);
         this.addGameObjectToScene(obj2);
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        System.out.println(gson.toJson(obj1));
+//        Gson gson = new GsonBuilder()
+//                .setPrettyPrinting()
+//                .registerTypeAdapter(Component.class, new ComponentDeserializer())
+//                .registerTypeAdapter(GameObject.class, new GameObjectDeserializer())
+//                .create();
+//        String objJson = gson.toJson(obj1);
+//        System.out.println(objJson);
+//        GameObject go = gson.fromJson(objJson, GameObject.class);
+//        go.transform.position.x += 400;
+//        this.addGameObjectToScene(go);
+
     }
 
     private void loadResources() {
@@ -86,15 +102,15 @@ public class LevelEditorScene extends Scene {
     @Override
     public void update(float dt) {
         //System.out.println(1/dt);
-        spriteFlipTimeLeft -= dt;
-        if(spriteFlipTimeLeft <= 0f) {
-            spriteFlipTimeLeft = spriteFlipTime;
-            spriteIndex++;
-            if(spriteIndex > 1) {
-                spriteIndex = 0;
-            }
-            obj1.getComponent(SpriteRenderer.class).setSprite(spritesheet.getSprite(spriteIndex));
-        }
+//        spriteFlipTimeLeft -= dt;
+//        if(spriteFlipTimeLeft <= 0f) {
+//            spriteFlipTimeLeft = spriteFlipTime;
+//            spriteIndex++;
+//            if(spriteIndex > 1) {
+//                spriteIndex = 0;
+//            }
+//            obj1.getComponent(SpriteRenderer.class).setSprite(spritesheet.getSprite(spriteIndex));
+//        }
         //obj1.transform.position.x += 10f * dt;
         // update game objects
         for(GameObject go : this.gameObjects) {

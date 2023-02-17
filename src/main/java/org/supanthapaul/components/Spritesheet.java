@@ -34,6 +34,8 @@ public class Spritesheet {
             Sprite sprite = new Sprite();
             sprite.setTexture(this.texture);
             sprite.setTexCoords(texCoords);
+            sprite.setWidth(spriteWidth);
+            sprite.setHeight(spriteHeight);
             this.sprites.add(sprite);
 
             // update current x,y coords
@@ -48,5 +50,9 @@ public class Spritesheet {
 
     public Sprite getSprite(int index) {
         return this.sprites.get(index);
+    }
+
+    public int size() {
+        return sprites.size();
     }
 }

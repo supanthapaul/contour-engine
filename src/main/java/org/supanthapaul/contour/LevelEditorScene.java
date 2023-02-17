@@ -1,10 +1,8 @@
 package org.supanthapaul.contour;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import imgui.ImGui;
+import imgui.ImVec2;
 import org.joml.Vector2f;
-import org.joml.Vector4f;
 import org.supanthapaul.components.Rigidbody;
 import org.supanthapaul.components.Sprite;
 import org.supanthapaul.components.SpriteRenderer;
@@ -40,7 +38,7 @@ public class LevelEditorScene extends Scene {
     private int vaoID, vboID, eboID;
     private boolean firstTime = false;
     GameObject obj1;
-    Spritesheet spritesheet;
+    Spritesheet characterSpritesheet, envSpritesheet;
 
     public LevelEditorScene() {
 
@@ -52,17 +50,18 @@ public class LevelEditorScene extends Scene {
 
         this.camera = new Camera(new Vector2f());
 
+        envSpritesheet = AssetPool.getSpritesheet("assets/images/Tilemap/tiles_packed.png");
+        characterSpritesheet = AssetPool.getSpritesheet("assets/images/Tilemap/characters_packed.png");
+
         if(levelLoaded) {
             this.activeGameObject = gameObjects.get(0);
             return;
         }
 
-        spritesheet = AssetPool.getSpritesheet("assets/images/Tilemap/characters_packed.png");
-
         obj1 = new GameObject("1",
                 new Transform(new Vector2f(150, 100), new Vector2f(256, 256)), 0);
         SpriteRenderer spriteRenderer1 = new SpriteRenderer();
-        spriteRenderer1.setSprite(spritesheet.getSprite(0));
+        spriteRenderer1.setSprite(characterSpritesheet.getSprite(0));
         obj1.addComponent(spriteRenderer1);
         obj1.addComponent(new Rigidbody());
         this.addGameObjectToScene(obj1);
@@ -71,7 +70,7 @@ public class LevelEditorScene extends Scene {
         GameObject obj2 = new GameObject("2",
                 new Transform(new Vector2f(400, 100), new Vector2f(256, 256)), -1);
         SpriteRenderer spriteRenderer2 = new SpriteRenderer();
-        spriteRenderer2.setSprite(spritesheet.getSprite(2));
+        spriteRenderer2.setSprite(characterSpritesheet.getSprite(2));
         obj2.addComponent(spriteRenderer2);
         this.addGameObjectToScene(obj2);
 
@@ -93,6 +92,9 @@ public class LevelEditorScene extends Scene {
         AssetPool.addSpritesheet("assets/images/Tilemap/characters_packed.png",
                 new Spritesheet(AssetPool.getTexture("assets/images/Tilemap/characters_packed.png"),
                         24, 24, 27, 0));
+        AssetPool.addSpritesheet("assets/images/Tilemap/tiles_packed.png",
+                new Spritesheet(AssetPool.getTexture("assets/images/Tilemap/tiles_packed.png"),
+                        18, 18, 180, 0));
     }
 
     private int spriteIndex = 0;
@@ -123,7 +125,41 @@ public class LevelEditorScene extends Scene {
     @Override
     public void imgui() {
         ImGui.begin("Level Editor");
-        ImGui.text("How cool is this?");
+
+        ImVec2 windowPos = new ImVec2();
+        ImGui.getWindowPos(windowPos);
+        ImVec2 windowSize = new ImVec2();
+        ImGui.getWindowSize(windowSize);
+        ImVec2 itemSpacing = new ImVec2();
+        ImGui.getStyle().getItemSpacing(itemSpacing);
+
+        float windowX2 = windowPos.x + windowSize.x;
+        for (int i = 0; i < envSpritesheet.size(); i++) {
+            Sprite sprite = envSpritesheet.getSprite(i);
+            float spriteWidth = sprite.getWidth() * 3;
+            float spriteHeight = sprite.getHeight() * 3;
+            int texId = sprite.getTexId();
+            Vector2f[] texCoords = sprite.getTexCoords();
+
+            // custom since imgui uses tex id for image button and using a spritesheet
+            //  will result in all buttons to have the same id (i.e button clicks wont register properly)
+            ImGui.pushID(i);
+            // image button
+            if(ImGui.imageButton(texId, spriteWidth, spriteHeight, texCoords[0].x, texCoords[0].y, texCoords[2].x, texCoords[2].y)) {
+                System.out.println("Button " + i);
+            }
+            ImGui.popID();
+
+            // Calculate line break for next button
+            ImVec2 lastButtonPos = new ImVec2();
+            ImGui.getItemRectMax(lastButtonPos);
+            float lastButtonX2 = lastButtonPos.x;
+            float nextButtonX2 = lastButtonX2 + itemSpacing.x + spriteWidth;
+            if(i + 1 < envSpritesheet.size() && nextButtonX2 < windowX2) {
+                ImGui.sameLine();
+            }
+        }
+
         ImGui.end();
     }
 }

@@ -1,5 +1,7 @@
 package org.supanthapaul.contour;
 
+import org.joml.Vector4f;
+
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
@@ -67,6 +69,36 @@ public class MouseListener {
 
     public static float getY() {
         return (float)get().yPos;
+    }
+
+    // Returns the current mouse x in world coords
+    public static float getOrthoX() {
+        float currentX = getX();
+        // convert to normalized range(-1 to 1)
+        currentX = (currentX / (float) Window.getWidth()) * 2.0f - 1.0f;
+
+        // convert to world coords
+        Vector4f tmp = new Vector4f(currentX, 0, 0, 1);
+        Camera cam = Window.getCurrentScene().getCamera();
+        tmp.mul(cam.getInverseProjection()).mul(cam.getInverseView());
+        currentX = tmp.x;
+
+        return currentX;
+    }
+
+    // Returns the current mouse y in world coords
+    public static float getOrthoY() {
+        float currentY = getY();
+        // convert to normalized range(-1 to 1)
+        currentY = (currentY / (float) Window.getHeight()) * 2.0f - 1.0f;
+
+        // convert to world coords
+        Vector4f tmp = new Vector4f(0, currentY, 0, 1);
+        Camera cam = Window.getCurrentScene().getCamera();
+        tmp.mul(cam.getInverseProjection()).mul(cam.getInverseView());
+        currentY = tmp.y;
+
+        return currentY;
     }
 
     public static float getDx() {

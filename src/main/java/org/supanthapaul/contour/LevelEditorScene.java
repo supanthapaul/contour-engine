@@ -114,6 +114,8 @@ public class LevelEditorScene extends Scene {
 //            obj1.getComponent(SpriteRenderer.class).setSprite(spritesheet.getSprite(spriteIndex));
 //        }
         //obj1.transform.position.x += 10f * dt;
+
+        MouseListener.getOrthoY();
         // update game objects
         for(GameObject go : this.gameObjects) {
             go.update(dt);
@@ -141,7 +143,7 @@ public class LevelEditorScene extends Scene {
             int texId = sprite.getTexId();
             Vector2f[] texCoords = sprite.getTexCoords();
 
-            // custom since imgui uses tex id for image button and using a spritesheet
+            // custom id since imgui uses tex id for image button and using a spritesheet
             //  will result in all buttons to have the same id (i.e button clicks wont register properly)
             ImGui.pushID(i);
             // image button

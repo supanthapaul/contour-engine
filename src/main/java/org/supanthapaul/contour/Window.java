@@ -34,8 +34,8 @@ public class Window {
     private String glslVersion = null;
 
     private Window(ImGuiLayer layer) {
-        this.width = 1280;
-        this.height = 720;
+        this.width = 1920;
+        this.height = 1080;
         this.title = "Contour Engine";
         r = 1;
         g = 1;
@@ -119,6 +119,10 @@ public class Window {
         glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback);
         glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
         glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback);
+        glfwSetWindowSizeCallback(glfwWindow, (w, newWidth, newHeight) -> {
+            Window.setWidth(newWidth);
+            Window.setHeight(newHeight);
+        });
 
         // make the opengl context current
         glfwMakeContextCurrent(glfwWindow);
@@ -233,5 +237,21 @@ public class Window {
         // Terminate glfw and free the error callback
         glfwTerminate();
         glfwSetErrorCallback(null).free();
+    }
+
+    public static int getWidth() {
+        return get().width;
+    }
+
+    public static int getHeight() {
+        return get().height;
+    }
+
+    public static void setWidth(int width) {
+        get().width = width;
+    }
+
+    public static void setHeight(int height) {
+        get().height = height;
     }
 }

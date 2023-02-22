@@ -1,4 +1,7 @@
-package org.supanthapaul.contour;
+package org.supanthapaul.scenes;
+
+import org.supanthapaul.contour.Window;
+import org.supanthapaul.scenes.Scene;
 
 public class LevelScene extends Scene {
 

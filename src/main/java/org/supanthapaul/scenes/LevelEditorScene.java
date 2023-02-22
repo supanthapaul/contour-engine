@@ -1,14 +1,13 @@
-package org.supanthapaul.contour;
+package org.supanthapaul.scenes;
 
 import imgui.ImGui;
 import imgui.ImVec2;
 import org.joml.Vector2f;
-import org.supanthapaul.components.Rigidbody;
-import org.supanthapaul.components.Sprite;
-import org.supanthapaul.components.SpriteRenderer;
-import org.supanthapaul.components.Spritesheet;
+import org.supanthapaul.components.*;
+import org.supanthapaul.contour.*;
 import org.supanthapaul.renderer.Shader;
 import org.supanthapaul.renderer.Texture;
+import org.supanthapaul.scenes.Scene;
 import org.supanthapaul.util.AssetPool;
 
 public class LevelEditorScene extends Scene {
@@ -16,29 +15,11 @@ public class LevelEditorScene extends Scene {
     private Shader defaultShader;
     private Texture testTexture;
     private GameObject testObject;
-
-    private float[] vertexArray = {
-            // position              // color                   // UV coordinates
-            100.0f, 0.0f, 0.0f,      1.0f, 0.0f, 0.0f, 1.0f,    1, 1,  // bottom right 0
-            0.0f, 100.0f, 0.0f,      0.0f, 1.0f, 0.0f, 1.0f,    0, 0,  // top left     1
-            100.0f, 100.0f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f,    1, 0,  // top right    2
-            0.0f, 0.0f, 0.0f,        1.0f, 1.0f, 0.0f, 1.0f,    0, 1,  // bottom left  3
-    };
-
-    // IMPORTANT: Must be in counter-clockwise order
-    private int[] elementArray = {
-        /*
-                x       x
-
-                x       x
-         */
-            2, 1, 0, // top right triangle
-            0, 1, 3  // bottom left triangle
-    };
-    private int vaoID, vboID, eboID;
     private boolean firstTime = false;
     GameObject obj1;
     Spritesheet characterSpritesheet, envSpritesheet;
+
+    MouseControls mouseControls = new MouseControls();
 
     public LevelEditorScene() {
 
@@ -115,11 +96,12 @@ public class LevelEditorScene extends Scene {
 //        }
         //obj1.transform.position.x += 10f * dt;
 
-        MouseListener.getOrthoY();
         // update game objects
         for(GameObject go : this.gameObjects) {
             go.update(dt);
         }
+
+        mouseControls.update(dt);
 
         this.renderer.render();
     }
@@ -148,7 +130,8 @@ public class LevelEditorScene extends Scene {
             ImGui.pushID(i);
             // image button
             if(ImGui.imageButton(texId, spriteWidth, spriteHeight, texCoords[0].x, texCoords[0].y, texCoords[2].x, texCoords[2].y)) {
-                System.out.println("Button " + i);
+                GameObject object = Prefabs.generateSpriteGameobject(sprite, spriteWidth, spriteHeight);
+                mouseControls.pickupObject(object);
             }
             ImGui.popID();
 

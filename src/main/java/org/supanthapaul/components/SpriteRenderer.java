@@ -3,7 +3,6 @@ package org.supanthapaul.components;
 import imgui.ImGui;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
-import org.supanthapaul.contour.Component;
 import org.supanthapaul.contour.Transform;
 import org.supanthapaul.renderer.Texture;
 

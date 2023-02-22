@@ -1,13 +1,16 @@
-package org.supanthapaul.contour;
+package org.supanthapaul.components;
 
 import imgui.ImGui;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.supanthapaul.contour.GameObject;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 public abstract class Component {
+    private static int ID_COUNTER = 0;
+    private int uid = -1;
 
     // The game object that uses this component
     // transient properties wont be serialized by gson
@@ -85,5 +88,19 @@ public abstract class Component {
 
     public void SetGameObject(GameObject gameObject) {
         this.gameObject = gameObject;
+    }
+
+    public void generateId() {
+        if(this.uid == -1) {
+            this.uid = ID_COUNTER++;
+        }
+    }
+
+    public int getUid() {
+        return this.uid;
+    }
+
+    public static void init(int maxId) {
+        ID_COUNTER = maxId;
     }
 }

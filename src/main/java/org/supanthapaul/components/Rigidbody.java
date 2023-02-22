@@ -2,7 +2,6 @@ package org.supanthapaul.components;
 
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import org.supanthapaul.contour.Component;
 
 public class Rigidbody extends Component {
     private int colliderType = 0;

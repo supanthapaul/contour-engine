@@ -1,7 +1,5 @@
 package org.supanthapaul.components;
 
-import org.supanthapaul.contour.Component;
-
 public class FontRenderer extends Component {
 
     @Override

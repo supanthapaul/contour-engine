@@ -1,6 +1,7 @@
 package org.supanthapaul.contour;
 
 import com.google.gson.*;
+import org.supanthapaul.components.Component;
 
 import java.lang.reflect.Type;
 

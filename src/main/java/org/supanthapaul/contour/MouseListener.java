@@ -88,7 +88,8 @@ public class MouseListener {
 
     // Returns the current mouse y in world coords
     public static float getOrthoY() {
-        float currentY = getY();
+        // normalized y coords are flipped in opengl
+        float currentY = Window.getHeight() - getY();
         // convert to normalized range(-1 to 1)
         currentY = (currentY / (float) Window.getHeight()) * 2.0f - 1.0f;
 

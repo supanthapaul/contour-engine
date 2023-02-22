@@ -1,8 +1,13 @@
-package org.supanthapaul.contour;
+package org.supanthapaul.scenes;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import imgui.ImGui;
+import org.supanthapaul.components.Component;
+import org.supanthapaul.components.ComponentDeserializer;
+import org.supanthapaul.contour.Camera;
+import org.supanthapaul.contour.GameObject;
+import org.supanthapaul.contour.GameObjectDeserializer;
 import org.supanthapaul.renderer.Renderer;
 
 import java.io.FileWriter;
@@ -103,10 +108,28 @@ public abstract class Scene {
         }
 
         if(!inFile.equals("")) {
+            int maxGoId = -1;
+            int maxCompId = -1;
+
             GameObject[] objs = gson.fromJson(inFile, GameObject[].class);
             for (int i =0; i < objs.length; i++) {
                 this.addGameObjectToScene(objs[i]);
+
+                // update max game object and component ids
+                for(Component c : objs[i].getAllComponents()) {
+                    if(c.getUid() > maxCompId) {
+                        maxCompId = c.getUid();
+                    }
+                }
+                if(objs[i].getUid() > maxGoId) {
+                    maxGoId = objs[i].getUid();
+                }
             }
+
+            maxGoId++;
+            maxCompId++;
+            GameObject.init(maxGoId);
+            Component.init(maxCompId);
             this.levelLoaded = true;
         }
     }

@@ -3,8 +3,10 @@ package org.supanthapaul.scenes;
 import imgui.ImGui;
 import imgui.ImVec2;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.supanthapaul.components.*;
 import org.supanthapaul.contour.*;
+import org.supanthapaul.renderer.DebugDraw;
 import org.supanthapaul.renderer.Shader;
 import org.supanthapaul.renderer.Texture;
 import org.supanthapaul.scenes.Scene;
@@ -33,7 +35,9 @@ public class LevelEditorScene extends Scene {
 
         envSpritesheet = AssetPool.getSpritesheet("assets/images/Tilemap/tiles_packed.png");
         characterSpritesheet = AssetPool.getSpritesheet("assets/images/Tilemap/characters_packed.png");
-
+        DebugDraw.addLine2D(new Vector2f(0, 0), new Vector2f(100, 100), new Vector3f(1, 0, 0), 400);
+        DebugDraw.addLine2D(new Vector2f(10, 100), new Vector2f(400, 300), new Vector3f(0, 1, 0), 400);
+        DebugDraw.addLine2D(new Vector2f(-100, -100), new Vector2f(500, 450), new Vector3f(0, 0, 0), 400);
         if(levelLoaded) {
             this.activeGameObject = gameObjects.get(0);
             return;

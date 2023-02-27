@@ -11,6 +11,7 @@ import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
+import org.supanthapaul.renderer.DebugDraw;
 import org.supanthapaul.scenes.LevelEditorScene;
 import org.supanthapaul.scenes.LevelScene;
 import org.supanthapaul.scenes.Scene;
@@ -188,11 +189,14 @@ public class Window {
             // poll events
             glfwPollEvents();
 
+            DebugDraw.beginFrame();
+
             glClearColor(r, g, b, 1);
             glClear(GL_COLOR_BUFFER_BIT);
 
             // update current scene
             if(dt >= 0) {
+                DebugDraw.draw();
                 currentScene.update(dt);
             }
 

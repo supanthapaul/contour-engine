@@ -14,9 +14,6 @@ import org.supanthapaul.util.AssetPool;
 
 public class LevelEditorScene extends Scene {
 
-    private Shader defaultShader;
-    private Texture testTexture;
-    private GameObject testObject;
     private boolean firstTime = false;
     GameObject obj1;
     Spritesheet characterSpritesheet, envSpritesheet;

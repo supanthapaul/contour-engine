@@ -75,10 +75,17 @@ public class LevelEditorScene extends Scene {
     private float spriteFlipTime = 0.3f;
     private float spriteFlipTimeLeft = 0f;
 
+    float angle = 0;
+    float x = 0f, y = 0f;
     @Override
     public void update(float dt) {
         //System.out.println(1/dt);
+        DebugDraw.addBox2D(new Vector2f(300, 200), new Vector2f(64, 32), angle);
+        DebugDraw.addCircle(new Vector2f(x, y), 64);
 
+        angle += 40f * dt;
+        x += 40f * dt;
+        y += 40f * dt;
         // update game objects
         for(GameObject go : this.gameObjects) {
             go.update(dt);

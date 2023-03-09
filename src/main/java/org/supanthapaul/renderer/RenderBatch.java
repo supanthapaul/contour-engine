@@ -173,7 +173,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
         // assign the texture id, i.e, the index of texture used by this sprite
         if(sprite.getTexture() != null) {
             for(int i=0;i < textures.size(); i++) {
-                if(textures.get(i) == sprite.getTexture()) {
+                if(textures.get(i).equals(sprite.getTexture())) {
                     // + 1 because if there's no texture in the sprite
                     // we reserve the 0th slot to the color only
                     texId = i + 1;
